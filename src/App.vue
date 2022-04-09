@@ -363,12 +363,17 @@
 </template>
 
 <script>
+import { validationMixin } from 'vuelidate'
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
+
+
 export default {
+  
   name: "App",
   components: {},
+  mixins: [validationMixin],
   data() {
     return {
       form: {
@@ -445,6 +450,18 @@ export default {
 
       show: true,
     };
+  },
+  validations: {
+    form: {
+      lastName: {
+        simpleValidator(value) {
+          const _isAlpha = /^[А-ЯЁ]+$/i.test(value)
+          console.log(_isAlpha)
+          console.log(value)
+          return value.length > 1
+        }
+      }
+    }
   },
   methods: {
     onSubmit(event) {
