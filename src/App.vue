@@ -34,10 +34,15 @@
             >
               <b-form-input
                 id="LastName"
-                v-model.trim="form.lastName"
+                v-model.trim="$v.form.lastName.$model"
                 placeholder="Фамилия"
+                :state="validateState('lastName')"
+                aria-describedby="input-1-live-feedback"
                 required
               ></b-form-input>
+              <b-form-invalid-feedback id="input-1-live-feedback"
+                >Вводите только русские буквы.</b-form-invalid-feedback
+              >
             </b-form-group>
           </b-col>
           <!-- Имя -->
@@ -45,10 +50,15 @@
             <b-form-group id="input-group-2" label="Имя" label-for="FirstName">
               <b-form-input
                 id="FirstName"
-                v-model.trim="form.firstName"
+                v-model.trim="$v.form.firstName.$model"
                 placeholder="Имя"
+                :state="validateState('firstName')"
+                aria-describedby="input-1-live-feedback"
                 required
               ></b-form-input>
+              <b-form-invalid-feedback id="input-1-live-feedback"
+                >Вводите только русские буквы.</b-form-invalid-feedback
+              >
             </b-form-group>
           </b-col>
           <!-- Отчество -->
@@ -60,10 +70,15 @@
             >
               <b-form-input
                 id="MiddleName"
-                v-model.trim="form.middleName"
+                v-model.trim="$v.form.middleName.$model"
                 placeholder="Отчество"
+                :state="validateState('middleName')"
+                aria-describedby="input-1-live-feedback"
                 required
               ></b-form-input>
+              <b-form-invalid-feedback id="input-1-live-feedback"
+                >Вводите только русские буквы.</b-form-invalid-feedback
+              >
             </b-form-group>
           </b-col>
         </b-row>
@@ -78,27 +93,28 @@
               <b-form-input
                 type="date"
                 id="inputDate"
-                v-model="form.inputDate"
+                v-model="$v.form.inputDate.$model"
+                :state="validateState('inputDate')"
                 required
               ></b-form-input>
             </b-form-group>
           </b-col>
           <!-- вид документа -->
-            <b-col lg>
-              <b-form-group
-                id="input-group-3"
-                label="Вид документа"
-                label-for="input-3"
-              >
-                <b-form-select
-                  id="input-3"
-                  v-model="form.selected"
-                  :options="docTypes"
-                  required
-                ></b-form-select>
-              </b-form-group>
-            </b-col>
-
+          <b-col lg>
+            <b-form-group
+              id="input-group-3"
+              label="Вид документа"
+              label-for="input-3"
+            >
+              <b-form-select
+                id="input-3"
+                v-model="$v.form.selected.$model"
+                :options="docTypes"
+                :state="validateState('selected')"
+                required
+              ></b-form-select>
+            </b-form-group>
+          </b-col>
         </b-row>
         <b-row>
           <b-col>
@@ -112,7 +128,8 @@
                 type="number"
                 id="docSer"
                 placeholder="Серия паспорта"
-                v-model="form.docSer"
+                v-model="$v.form.docSer.$model"
+                :state="validateState('docSer')"
                 required
               ></b-form-input>
             </b-form-group>
@@ -128,7 +145,8 @@
                 type="number"
                 id="docNum"
                 placeholder="Номер паспорта"
-                v-model="form.docNum"
+                v-model="$v.form.docNum.$model"
+                :state="validateState('docNum')"
                 required
               ></b-form-input>
             </b-form-group>
@@ -363,14 +381,13 @@
 </template>
 
 <script>
-import { validationMixin } from 'vuelidate'
+import { validationMixin } from "vuelidate";
+import { required, minLength } from "vuelidate/lib/validators";
+
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
-
-
 export default {
-  
   name: "App",
   components: {},
   mixins: [validationMixin],
@@ -403,7 +420,7 @@ export default {
       },
       // selected: "Паспорт гражданина РФ",
       docTypes: [
-        { text: "Паспорт гражданина РФ", value: "Паспорт гражданина РФ",},
+        { text: "Паспорт гражданина РФ", value: "Паспорт гражданина РФ" },
         { text: "Вид на жительство", value: "Вид на жительство" },
         {
           text: "Водительское удостоверение гражданина РФ",
@@ -446,7 +463,7 @@ export default {
         },
       ],
 
-      trailers: [ "Нет", "Да"],
+      trailers: ["Нет", "Да"],
 
       show: true,
     };
@@ -454,16 +471,86 @@ export default {
   validations: {
     form: {
       lastName: {
+        required,
         simpleValidator(value) {
-          const _isAlpha = /^[А-ЯЁ]+$/i.test(value)
-          console.log(_isAlpha)
-          console.log(value)
-          return value.length > 1
-        }
-      }
-    }
+          const _isAlpha = /^[А-ЯЁ]+$/i.test(value);
+          return _isAlpha;
+        },
+      },
+      firstName: {
+        required,
+        simpleValidator(value) {
+          const _isAlpha = /^[А-ЯЁ]+$/i.test(value);
+          return _isAlpha;
+        },
+      },
+      middleName: {
+        required,
+        simpleValidator(value) {
+          const _isAlpha = /^[А-ЯЁ]+$/i.test(value);
+          return _isAlpha;
+        },
+      },
+      docSer: {
+        required,
+        simpleValidator(value) {
+          let _isPassCorrect = true;
+          if (this.form.selected === "Паспорт гражданина РФ") {
+            _isPassCorrect = /^\d{4}$/i.test(value);
+            console.log(_isPassCorrect);
+            return _isPassCorrect;
+          }
+          console.log(_isPassCorrect);
+          return _isPassCorrect;
+        },
+      },
+      docNum: {
+        required,
+        simpleValidator(value) {
+          let _isPassCorrect = true;
+          if (this.form.selected === "Паспорт гражданина РФ") {
+            _isPassCorrect = /^\d{6}$/i.test(value);
+            console.log(_isPassCorrect);
+            return _isPassCorrect;
+          }
+          console.log(_isPassCorrect);
+          return _isPassCorrect;
+        },
+      },
+      docIssuedBy: {},
+      docDate: {},
+      сitizenshipCode: {},
+      officialAddress: {},
+      position: {},
+      guestEmailAddress: {},
+      carCitizenshipCode: {},
+      carRegistrationNumber: {},
+      carBrand: {},
+      carModel: {},
+      carColor: {},
+      trailerCitizenshipCode: {},
+      trailerRegistrationNumber: {},
+      trailer: {},
+      docDateValid: {},
+
+      inputDate: {},
+      selected: {},
+      docType: {},
+    },
+  },
+  computed: {
+    // nameErrors() {
+    //   const errors = [];
+    //   if (!this.$v.form.lastName.required)
+    //     errors.push("Обязательно для заполнения.");
+    //   return errors;
+    // },
   },
   methods: {
+    validateState(name) {
+      const { $dirty, $error } = this.$v.form[name];
+      return $dirty ? !$error : null;
+    },
     onSubmit(event) {
       event.preventDefault();
       console.log(this.form);
@@ -489,12 +576,12 @@ export default {
       this.form.carColor = "";
       this.form.trailerCitizenshipCode = "";
       this.form.trailerRegistrationNumber = "";
-      this.form.trailer = null;
+      this.form.trailer = "Нет";
       this.form.docDateValid = null;
       this.form.docSer = null;
       this.form.docNum = null;
       this.form.inputDate = null;
-      this.form.selected = "";
+      this.form.selected = "Паспорт гражданина РФ";
       this.form.docType = null;
 
       // Уловка для сброса/очистки состояния проверки формы в собственном браузере
