@@ -132,6 +132,9 @@
                 :state="validateState('docSer')"
                 required
               ></b-form-input>
+              <b-form-invalid-feedback id="input-2-live-feedback"
+                >Должно быть 4 цифры</b-form-invalid-feedback
+              >
             </b-form-group>
           </b-col>
           <!-- номер паспорта -->
@@ -149,17 +152,25 @@
                 :state="validateState('docNum')"
                 required
               ></b-form-input>
+              <b-form-invalid-feedback id="input-2-live-feedback"
+                >Должно быть 6 цифр</b-form-invalid-feedback
+              >
             </b-form-group>
           </b-col>
         </b-row>
         <!-- кем выдан -->
-        <b-form-group id="input-group-2" label="Кем выдан" label-for="textarea">
+        <b-form-group
+          id="input-group-2"
+          label="Кем выдан"
+          label-for="docIssuedBy"
+        >
           <b-form-textarea
-            id="textarea"
-            v-model="form.docIssuedBy"
+            id="docIssuedBy"
+            v-model="$v.form.docIssuedBy.$model"
+            :state="validateState('docIssuedBy')"
             placeholder="Кем выдан"
-            rows="3"
-            max-rows="6"
+            rows="2"
+            max-rows="2"
           ></b-form-textarea>
         </b-form-group>
         <!-- Дата выдачи  -->
@@ -173,7 +184,8 @@
               <b-form-input
                 type="date"
                 id="docDate"
-                v-model="form.docDate"
+                v-model="$v.form.docDate.$model"
+                :state="validateState('docDate')"
                 required
               ></b-form-input>
             </b-form-group>
@@ -188,7 +200,9 @@
               <b-form-input
                 type="date"
                 id="docDateValid"
-                v-model="form.docDateValid"
+                v-model="$v.form.docDateValid.$model"
+
+                :disabled="disableInput"
                 required
               ></b-form-input>
             </b-form-group>
@@ -202,7 +216,9 @@
         >
           <b-form-input
             id="сitizenshipCode"
-            v-model="form.сitizenshipCode"
+            v-model="$v.form.сitizenshipCode.$model"
+            :state="validateState('сitizenshipCode')"
+            :value="defaultCitizenshipCode"
             placeholder="Гражданство"
             required
           ></b-form-input>
@@ -215,7 +231,8 @@
         >
           <b-form-input
             id="officialAddress"
-            v-model="form.officialAddress"
+            v-model="$v.form.officialAddress.$model"
+            :state="validateState('officialAddress')"
             placeholder="Адрес регистрации"
             required
           ></b-form-input>
@@ -224,10 +241,14 @@
         <b-form-group id="input-group-2" label="Должность" label-for="position">
           <b-form-input
             id="position"
-            v-model="form.position"
+            v-model="$v.form.position.$model"
+            :state="validateState('position')"
             placeholder="Должность"
             required
           ></b-form-input>
+          <b-form-invalid-feedback id="input-position-live-feedback"
+            >Поле должно содержать только буквы</b-form-invalid-feedback
+          >
         </b-form-group>
         <!-- Электронный адрес получателя пропуска  -->
         <b-form-group
@@ -237,7 +258,8 @@
         >
           <b-form-input
             id="guestEmailAddress"
-            v-model="form.guestEmailAddress"
+            v-model="$v.form.guestEmailAddress.$model"
+            :state="validateState('guestEmailAddress')"
             type="email"
             placeholder="Введите email"
             required
@@ -269,7 +291,7 @@
                       id="carCitizenshipCode"
                       v-model="form.carCitizenshipCode"
                       placeholder="Страна регистрации"
-                      required
+                      
                     ></b-form-input>
                   </b-form-group>
                   <!-- Регистрационный знак  -->
@@ -282,7 +304,7 @@
                       id="carRegistrationNumber"
                       v-model="form.carRegistrationNumber"
                       placeholder="Регистрационный знак"
-                      required
+                      
                     ></b-form-input>
                   </b-form-group>
                   <!-- Марка -->
@@ -295,7 +317,7 @@
                       id="carBrand"
                       v-model="form.carBrand"
                       placeholder="Марка"
-                      required
+                      
                     ></b-form-input>
                   </b-form-group>
                   <!-- Модель -->
@@ -308,7 +330,7 @@
                       id="carModel"
                       v-model="form.carModel"
                       placeholder="Модель"
-                      required
+                      
                     ></b-form-input>
                   </b-form-group>
                   <!-- Цвет -->
@@ -321,7 +343,7 @@
                       id="carColor"
                       v-model="form.carColor"
                       placeholder="Цвет"
-                      required
+                      
                     ></b-form-input>
                   </b-form-group>
                   <!-- Наличие прицепа -->
@@ -334,7 +356,7 @@
                       id="trailer"
                       v-model="form.trailer"
                       :options="trailers"
-                      required
+                      
                     ></b-form-select>
                   </b-form-group>
                   <!-- Страна регистрации прицепа  -->
@@ -347,7 +369,7 @@
                       id="trailerCitizenshipCode"
                       v-model="form.trailerCitizenshipCode"
                       placeholder="Страна регистрации прицепа"
-                      required
+                      
                     ></b-form-input>
                   </b-form-group>
                   <!-- Регистрационный знак прицепа   -->
@@ -360,7 +382,7 @@
                       id="trailerRegistrationNumber"
                       v-model="form.trailerRegistrationNumber"
                       placeholder="Регистрационный знак прицепа"
-                      required
+                      
                     ></b-form-input>
                   </b-form-group>
                 </b-card>
@@ -382,7 +404,7 @@
 
 <script>
 import { validationMixin } from "vuelidate";
-import { required, minLength } from "vuelidate/lib/validators";
+import { required, email } from "vuelidate/lib/validators";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
@@ -517,12 +539,19 @@ export default {
           return _isPassCorrect;
         },
       },
-      docIssuedBy: {},
-      docDate: {},
-      сitizenshipCode: {},
-      officialAddress: {},
-      position: {},
-      guestEmailAddress: {},
+      docIssuedBy: { required },
+      docDate: { required },
+      docDateValid: { required },
+      сitizenshipCode: { required },
+      officialAddress: { required },
+      position: {
+        required,
+        simpleValidator(value) {
+          const _isAlphaRuEn = /^[a-zа-яё\s]+$/iu.test(value);
+          return _isAlphaRuEn;
+        },
+      },
+      guestEmailAddress: { required, email },
       carCitizenshipCode: {},
       carRegistrationNumber: {},
       carBrand: {},
@@ -531,7 +560,6 @@ export default {
       trailerCitizenshipCode: {},
       trailerRegistrationNumber: {},
       trailer: {},
-      docDateValid: {},
 
       inputDate: {},
       selected: {},
@@ -539,6 +567,18 @@ export default {
     },
   },
   computed: {
+    disableInput() {
+      // сбрасываю значение поля, если была выбрана дата и теперь поле неактивно
+      if (this.form.selected === "Паспорт гражданина РФ") this.form.docDateValid=null;
+
+      // делаю неактивным, если выбран Паспорт гражданина РФ
+      return this.form.selected === "Паспорт гражданина РФ" ? true : false;
+    },
+    defaultCitizenshipCode() {
+      this.form.selected === "Паспорт гражданина РФ" ? this.form.сitizenshipCode="Паспорт гражданина РФ" : this.form.сitizenshipCode="" ;
+      
+    }
+
     // nameErrors() {
     //   const errors = [];
     //   if (!this.$v.form.lastName.required)
