@@ -1,8 +1,9 @@
 <template>
-  <div id="app">
-    <div>
-      <b-navbar toggleable="lg" type="dark" variant="danger" class="mb-3">
+  <div id="app" >
+
+      <b-navbar sticky fixed toggleable="lg" type="dark" variant="danger" class="mb-3"  >
         <b-navbar-brand href="#">NavBar</b-navbar-brand>
+        <b-button class="center" @click="showFormPerson"><b-icon></b-icon>Кнопка</b-button>
 
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -20,7 +21,7 @@
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
-    </div>
+
 
     <b-container>
       <b-form @submit="onSubmit" @reset="onReset" v-if="show">
@@ -201,7 +202,6 @@
                 type="date"
                 id="docDateValid"
                 v-model="$v.form.docDateValid.$model"
-
                 :disabled="disableInput"
                 required
               ></b-form-input>
@@ -291,7 +291,6 @@
                       id="carCitizenshipCode"
                       v-model="form.carCitizenshipCode"
                       placeholder="Страна регистрации"
-                      
                     ></b-form-input>
                   </b-form-group>
                   <!-- Регистрационный знак  -->
@@ -304,7 +303,6 @@
                       id="carRegistrationNumber"
                       v-model="form.carRegistrationNumber"
                       placeholder="Регистрационный знак"
-                      
                     ></b-form-input>
                   </b-form-group>
                   <!-- Марка -->
@@ -317,7 +315,6 @@
                       id="carBrand"
                       v-model="form.carBrand"
                       placeholder="Марка"
-                      
                     ></b-form-input>
                   </b-form-group>
                   <!-- Модель -->
@@ -330,7 +327,6 @@
                       id="carModel"
                       v-model="form.carModel"
                       placeholder="Модель"
-                      
                     ></b-form-input>
                   </b-form-group>
                   <!-- Цвет -->
@@ -341,10 +337,13 @@
                   >
                     <b-form-input
                       id="carColor"
-                      v-model="form.carColor"
+                      v-model="$v.form.carColor.$model"
+                      :state="validateState('carColor')"
                       placeholder="Цвет"
-                      
                     ></b-form-input>
+                    <b-form-invalid-feedback id="input-car-color-live-feedback"
+                      >Поле должно содержать только буквы.</b-form-invalid-feedback
+                    >
                   </b-form-group>
                   <!-- Наличие прицепа -->
                   <b-form-group
@@ -356,7 +355,6 @@
                       id="trailer"
                       v-model="form.trailer"
                       :options="trailers"
-                      
                     ></b-form-select>
                   </b-form-group>
                   <!-- Страна регистрации прицепа  -->
@@ -369,7 +367,6 @@
                       id="trailerCitizenshipCode"
                       v-model="form.trailerCitizenshipCode"
                       placeholder="Страна регистрации прицепа"
-                      
                     ></b-form-input>
                   </b-form-group>
                   <!-- Регистрационный знак прицепа   -->
@@ -382,7 +379,6 @@
                       id="trailerRegistrationNumber"
                       v-model="form.trailerRegistrationNumber"
                       placeholder="Регистрационный знак прицепа"
-                      
                     ></b-form-input>
                   </b-form-group>
                 </b-card>
@@ -409,9 +405,13 @@ import { required, email } from "vuelidate/lib/validators";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
+import { BIcon } from 'bootstrap-vue'
+
 export default {
   name: "App",
-  components: {},
+  components: {
+    BIcon
+  },
   mixins: [validationMixin],
   data() {
     return {
@@ -425,12 +425,12 @@ export default {
         officialAddress: "",
         position: "",
         guestEmailAddress: "",
-        carCitizenshipCode: "",
+        carCitizenshipCode: "Россия",
         carRegistrationNumber: "",
         carBrand: "",
         carModel: "",
         carColor: "",
-        trailerCitizenshipCode: "",
+        trailerCitizenshipCode: "Россия",
         trailerRegistrationNumber: "",
         trailer: "Нет",
         docDateValid: null,
@@ -487,7 +487,7 @@ export default {
 
       trailers: ["Нет", "Да"],
 
-      show: true,
+      show: false,
     };
   },
   validations: {
@@ -556,7 +556,12 @@ export default {
       carRegistrationNumber: {},
       carBrand: {},
       carModel: {},
-      carColor: {},
+      carColor: {
+        simpleValidator(value) {
+          const _isAlphaRuEn = /^[a-zа-яё\s]+$/iu.test(value);
+          return _isAlphaRuEn;
+        },
+      },
       trailerCitizenshipCode: {},
       trailerRegistrationNumber: {},
       trailer: {},
@@ -569,15 +574,17 @@ export default {
   computed: {
     disableInput() {
       // сбрасываю значение поля, если была выбрана дата и теперь поле неактивно
-      if (this.form.selected === "Паспорт гражданина РФ") this.form.docDateValid=null;
+      if (this.form.selected === "Паспорт гражданина РФ")
+        this.form.docDateValid = null;
 
       // делаю неактивным, если выбран Паспорт гражданина РФ
       return this.form.selected === "Паспорт гражданина РФ" ? true : false;
     },
     defaultCitizenshipCode() {
-      this.form.selected === "Паспорт гражданина РФ" ? this.form.сitizenshipCode="Паспорт гражданина РФ" : this.form.сitizenshipCode="" ;
-      
-    }
+      this.form.selected === "Паспорт гражданина РФ"
+        ? (this.form.сitizenshipCode = "Паспорт гражданина РФ")
+        : (this.form.сitizenshipCode = "");
+    },
 
     // nameErrors() {
     //   const errors = [];
@@ -587,6 +594,12 @@ export default {
     // },
   },
   methods: {
+    showFormPerson() {
+        console.log("тыц");
+        console.log(this.show);
+        return this.show = !this.show;
+    },
+
     validateState(name) {
       const { $dirty, $error } = this.$v.form[name];
       return $dirty ? !$error : null;
