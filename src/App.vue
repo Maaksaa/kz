@@ -1,30 +1,40 @@
 <template>
-  <div id="app" >
+  <div id="app">
+    <b-navbar
+      sticky
+      fixed
+      toggleable="lg"
+      type="dark"
+      variant="danger"
+      class="mb-3"
+    >
+      <b-navbar-brand href="#">NavBar</b-navbar-brand>
+      <b-button class="center mr-2" @click="showFormPerson"
+        ><b-icon></b-icon>+ Человек</b-button
+      >
+      <b-button class="center" @click="showFormCar"
+        ><b-icon></b-icon>+ Машина</b-button
+      >
 
-      <b-navbar sticky fixed toggleable="lg" type="dark" variant="danger" class="mb-3"  >
-        <b-navbar-brand href="#">NavBar</b-navbar-brand>
-        <b-button class="center" @click="showFormPerson"><b-icon></b-icon>Кнопка</b-button>
+      <!-- <b-navbar-toggle target="nav-collapse"></b-navbar-toggle> -->
 
-        <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-
-        <b-collapse id="nav-collapse" is-nav>
-          <!-- Right aligned nav items -->
-          <b-navbar-nav class="ml-auto">
-            <b-nav-item-dropdown right>
-              <!-- Using 'button-content' slot -->
-              <template #button-content>
-                <em>User</em>
-              </template>
-              <b-dropdown-item href="#">Profile</b-dropdown-item>
-              <b-dropdown-item href="#">Sign Out</b-dropdown-item>
-            </b-nav-item-dropdown>
-          </b-navbar-nav>
-        </b-collapse>
-      </b-navbar>
-
+      <b-collapse id="nav-collapse" is-nav>
+        <!-- Right aligned nav items -->
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item-dropdown right>
+            <!-- Using 'button-content' slot -->
+            <template #button-content>
+              <em>User</em>
+            </template>
+            <b-dropdown-item href="#">Profile</b-dropdown-item>
+            <b-dropdown-item href="#">Sign Out</b-dropdown-item>
+          </b-nav-item-dropdown>
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
 
     <b-container>
-      <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+      <b-form @submit="onSubmit" @reset="onReset" v-if="isShowFormPerson">
         <b-row>
           <b-col lg>
             <!-- Фамилия -->
@@ -251,7 +261,7 @@
           >
         </b-form-group>
         <!-- Электронный адрес получателя пропуска  -->
-        <b-form-group
+        <!-- <b-form-group
           id="input-group-1"
           label="Электронный адрес получателя пропуска:"
           label-for="guestEmailAddress"
@@ -264,21 +274,11 @@
             placeholder="Введите email"
             required
           ></b-form-input>
-        </b-form-group>
-        <b-row>
-          <b-col>
-            <!-- Кнопка Добавить данные еще одно физ. лица -->
-            <div>
-              <b-button variant="primary"
-                >Добавить данные еще одно физ. лица</b-button
-              >
-            </div>
-          </b-col>
+        </b-form-group> -->
+        <b-container v-if="isShowFormCar">
+        <b-row >
           <b-col>
             <div>
-              <b-button v-b-toggle.collapse-1 variant="primary"
-                >Добавить машину</b-button
-              >
               <b-collapse id="collapse-1" class="mt-2">
                 <b-card>
                   <p class="card-text">Свернутое содержимое здесь</p>
@@ -342,7 +342,8 @@
                       placeholder="Цвет"
                     ></b-form-input>
                     <b-form-invalid-feedback id="input-car-color-live-feedback"
-                      >Поле должно содержать только буквы.</b-form-invalid-feedback
+                      >Поле должно содержать только
+                      буквы.</b-form-invalid-feedback
                     >
                   </b-form-group>
                   <!-- Наличие прицепа -->
@@ -386,6 +387,7 @@
             </div>
           </b-col>
         </b-row>
+        </b-container>
         <!-- Данные транспортного средства, на которое оформляется пропуск -->
 
         <b-button type="submit" variant="primary">Отправить</b-button>
@@ -405,12 +407,12 @@ import { required, email } from "vuelidate/lib/validators";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
-import { BIcon } from 'bootstrap-vue'
+import { BIcon } from "bootstrap-vue";
 
 export default {
   name: "App",
   components: {
-    BIcon
+    BIcon,
   },
   mixins: [validationMixin],
   data() {
@@ -487,7 +489,8 @@ export default {
 
       trailers: ["Нет", "Да"],
 
-      show: false,
+      isShowFormPerson: false,
+      isShowFormCar: false,
     };
   },
   validations: {
@@ -595,9 +598,14 @@ export default {
   },
   methods: {
     showFormPerson() {
-        console.log("тыц");
-        console.log(this.show);
-        return this.show = !this.show;
+      console.log("тыц");
+      console.log(this.isShowFormPerson);
+      return (this.isShowFormPerson = !this.isShowFormPerson);
+    },
+    showFormCar() {
+      console.log("тыц");
+      console.log(this.isShowFormCar);
+      return (this.isShowFormCar = !this.isShowFormCar);
     },
 
     validateState(name) {
@@ -638,9 +646,9 @@ export default {
       this.form.docType = null;
 
       // Уловка для сброса/очистки состояния проверки формы в собственном браузере
-      // this.show = false;
+      // this.showCar = false;
       // this.$nextTick(() => {
-      //   this.show = true;
+      //   this.showCar = true;
       // });
     },
   },
