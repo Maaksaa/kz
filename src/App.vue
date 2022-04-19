@@ -9,14 +9,11 @@
       class="mb-3"
     >
       <b-navbar-brand href="#">NavBar</b-navbar-brand>
-      <b-button class="center mr-2" @click="showFormPerson"
-        ><b-icon></b-icon>+ Человек</b-button
-      >
-      <b-button class="center" @click="showFormCar"
-        ><b-icon></b-icon>+ Машина</b-button
+      <b-button class="center" @click="showFormPerson"
+        ><b-icon></b-icon>Кнопка</b-button
       >
 
-      <!-- <b-navbar-toggle target="nav-collapse"></b-navbar-toggle> -->
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
         <!-- Right aligned nav items -->
@@ -34,10 +31,10 @@
     </b-navbar>
 
     <b-container>
-      <b-form @submit="onSubmit" @reset="onReset" v-if="isShowFormPerson">
+      <b-form @submit="onSubmit"  v-if="show">
         <b-row>
+          <!-- Фамилия -->
           <b-col lg>
-            <!-- Фамилия -->
             <b-form-group
               id="input-group-2"
               label="Фамилия"
@@ -52,7 +49,7 @@
                 required
               ></b-form-input>
               <b-form-invalid-feedback id="input-1-live-feedback"
-                >Вводите только русские буквы.</b-form-invalid-feedback
+                >Вводите только  буквы.</b-form-invalid-feedback
               >
             </b-form-group>
           </b-col>
@@ -68,7 +65,7 @@
                 required
               ></b-form-input>
               <b-form-invalid-feedback id="input-1-live-feedback"
-                >Вводите только русские буквы.</b-form-invalid-feedback
+                >Вводите только  буквы.</b-form-invalid-feedback
               >
             </b-form-group>
           </b-col>
@@ -82,13 +79,13 @@
               <b-form-input
                 id="MiddleName"
                 v-model.trim="$v.form.middleName.$model"
-                placeholder="Отчество"
+                placeholder="Отчество (не обязательно)"
                 :state="validateState('middleName')"
                 aria-describedby="input-1-live-feedback"
-                required
+                
               ></b-form-input>
               <b-form-invalid-feedback id="input-1-live-feedback"
-                >Вводите только русские буквы.</b-form-invalid-feedback
+                >Вводите только буквы.</b-form-invalid-feedback
               >
             </b-form-group>
           </b-col>
@@ -261,7 +258,7 @@
           >
         </b-form-group>
         <!-- Электронный адрес получателя пропуска  -->
-        <!-- <b-form-group
+        <b-form-group
           id="input-group-1"
           label="Электронный адрес получателя пропуска:"
           label-for="guestEmailAddress"
@@ -274,13 +271,23 @@
             placeholder="Введите email"
             required
           ></b-form-input>
-        </b-form-group> -->
-        <b-container v-if="isShowFormCar">
-        <b-row >
+        </b-form-group>
+        <b-row>
+            <!-- Кнопка Добавить данные еще одно физ. лица -->
+          <!-- <b-col>
+            <div>
+              <b-button variant="primary"
+                >Добавить данные еще одно физ. лица</b-button
+              >
+            </div>
+          </b-col> -->
           <b-col>
             <div>
+              <b-button v-b-toggle.collapse-1 variant="primary"
+                >Добавить машину</b-button
+              >
               <b-collapse id="collapse-1" class="mt-2">
-                <b-card>
+
                   <p class="card-text">Свернутое содержимое здесь</p>
                   <b-form-group
                     id="input-group-2"
@@ -382,20 +389,19 @@
                       placeholder="Регистрационный знак прицепа"
                     ></b-form-input>
                   </b-form-group>
-                </b-card>
+
               </b-collapse>
             </div>
           </b-col>
         </b-row>
-        </b-container>
         <!-- Данные транспортного средства, на которое оформляется пропуск -->
 
-        <b-button type="submit" variant="primary">Отправить</b-button>
-        <b-button type="reset" variant="danger">Сбросить</b-button>
+        <!-- <b-button type="submit" variant="primary">Отправить</b-button> -->
+        <!-- <b-button type="reset" variant="danger">Сбросить</b-button> -->
       </b-form>
-      <b-card class="mt-3" header="Form Data Result">
+      <!-- <b-card class="mt-3" header="Form Data Result">
         <pre class="m-0">{{ form }}</pre>
-      </b-card>
+      </b-card> -->
     </b-container>
   </div>
 </template>
@@ -489,30 +495,29 @@ export default {
 
       trailers: ["Нет", "Да"],
 
-      isShowFormPerson: false,
-      isShowFormCar: false,
+      show: false,
     };
   },
+  // валидация
   validations: {
     form: {
       lastName: {
         required,
         simpleValidator(value) {
-          const _isAlpha = /^[А-ЯЁ]+$/i.test(value);
+          const _isAlpha = /^[A-ZА-ЯЁ\s]+$/i.test(value);
           return _isAlpha;
         },
       },
       firstName: {
         required,
         simpleValidator(value) {
-          const _isAlpha = /^[А-ЯЁ]+$/i.test(value);
+          const _isAlpha = /^[A-ZА-ЯЁ\s]+$/i.test(value);
           return _isAlpha;
         },
       },
       middleName: {
-        required,
         simpleValidator(value) {
-          const _isAlpha = /^[А-ЯЁ]+$/i.test(value);
+          const _isAlpha = /^[A-ZА-ЯЁ\s]+$/i.test(value);
           return _isAlpha;
         },
       },
@@ -599,13 +604,8 @@ export default {
   methods: {
     showFormPerson() {
       console.log("тыц");
-      console.log(this.isShowFormPerson);
-      return (this.isShowFormPerson = !this.isShowFormPerson);
-    },
-    showFormCar() {
-      console.log("тыц");
-      console.log(this.isShowFormCar);
-      return (this.isShowFormCar = !this.isShowFormCar);
+      console.log(this.show);
+      return (this.show = !this.show);
     },
 
     validateState(name) {
@@ -617,40 +617,40 @@ export default {
       console.log(this.form);
       alert(JSON.stringify(this.form));
     },
-    onReset(event) {
-      event.preventDefault();
-      // Сбросить значения нашей формы
+    // onReset(event) {
+    //   event.preventDefault();
+    //   // Сбросить значения нашей формы
 
-      this.form.lastName = "";
-      this.form.firstName = "";
-      this.form.middleName = "";
-      this.form.docIssuedBy = "";
-      this.form.docDate = "";
-      this.form.сitizenshipCode = "";
-      this.form.officialAddress = "";
-      this.form.position = "";
-      this.form.guestEmailAddress = "";
-      this.form.carCitizenshipCode = "";
-      this.form.carRegistrationNumber = "";
-      this.form.carBrand = "";
-      this.form.carModel = "";
-      this.form.carColor = "";
-      this.form.trailerCitizenshipCode = "";
-      this.form.trailerRegistrationNumber = "";
-      this.form.trailer = "Нет";
-      this.form.docDateValid = null;
-      this.form.docSer = null;
-      this.form.docNum = null;
-      this.form.inputDate = null;
-      this.form.selected = "Паспорт гражданина РФ";
-      this.form.docType = null;
+    //   this.form.lastName = "";
+    //   this.form.firstName = "";
+    //   this.form.middleName = "";
+    //   this.form.docIssuedBy = "";
+    //   this.form.docDate = "";
+    //   this.form.сitizenshipCode = "";
+    //   this.form.officialAddress = "";
+    //   this.form.position = "";
+    //   this.form.guestEmailAddress = "";
+    //   this.form.carCitizenshipCode = "";
+    //   this.form.carRegistrationNumber = "";
+    //   this.form.carBrand = "";
+    //   this.form.carModel = "";
+    //   this.form.carColor = "";
+    //   this.form.trailerCitizenshipCode = "";
+    //   this.form.trailerRegistrationNumber = "";
+    //   this.form.trailer = "Нет";
+    //   this.form.docDateValid = null;
+    //   this.form.docSer = null;
+    //   this.form.docNum = null;
+    //   this.form.inputDate = null;
+    //   this.form.selected = "Паспорт гражданина РФ";
+    //   this.form.docType = null;
 
-      // Уловка для сброса/очистки состояния проверки формы в собственном браузере
-      // this.showCar = false;
-      // this.$nextTick(() => {
-      //   this.showCar = true;
-      // });
-    },
+    //   // Уловка для сброса/очистки состояния проверки формы в собственном браузере
+    //   // this.show = false;
+    //   // this.$nextTick(() => {
+    //   //   this.show = true;
+    //   // });
+    // },
   },
 };
 </script>
