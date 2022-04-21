@@ -8,397 +8,367 @@
       variant="danger"
       class="mb-3"
     >
-      <b-navbar-brand href="#">NavBar</b-navbar-brand>
-      <b-button class="center" @click="showFormPerson"
-        ><b-icon></b-icon>Кнопка</b-button
-      >
-
-      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-
-      <b-collapse id="nav-collapse" is-nav>
-        <!-- Right aligned nav items -->
-        <b-navbar-nav class="ml-auto">
-          <b-nav-item-dropdown right>
-            <!-- Using 'button-content' slot -->
-            <template #button-content>
-              <em>User</em>
-            </template>
-            <b-dropdown-item href="#">Profile</b-dropdown-item>
-            <b-dropdown-item href="#">Sign Out</b-dropdown-item>
-          </b-nav-item-dropdown>
-        </b-navbar-nav>
-      </b-collapse>
+      <!-- <b-navbar-brand href="#">NavBar</b-navbar-brand> -->
+      <b-button v-b-toggle.collapse-person class="m-1">+ Человек</b-button>
+      <b-button v-b-toggle.collapse-car class="m-1">+ Машина</b-button>
     </b-navbar>
-
     <b-container>
-      <b-form @submit="onSubmit"  v-if="show">
-        <b-row>
-          <!-- Фамилия -->
-          <b-col lg>
+      <b-collapse id="collapse-person">
+        <b-card class="mb-4" header="Форма для заполнения" header-tag="h5">
+          <b-form @submit="onSubmit">
+            <b-row>
+              <!-- Фамилия -->
+              <b-col lg>
+                <b-form-group
+                  id="input-group-2"
+                  label="Фамилия"
+                  label-for="LastName"
+                >
+                  <b-form-input
+                    id="LastName"
+                    v-model.trim="$v.form.lastName.$model"
+                    placeholder="Фамилия"
+                    :state="validateState('lastName')"
+                    aria-describedby="input-1-live-feedback"
+                    required
+                  ></b-form-input>
+                  <b-form-invalid-feedback id="input-1-live-feedback"
+                    >Вводите только буквы.</b-form-invalid-feedback
+                  >
+                </b-form-group>
+              </b-col>
+              <!-- Имя -->
+              <b-col lg>
+                <b-form-group
+                  id="input-group-2"
+                  label="Имя"
+                  label-for="FirstName"
+                >
+                  <b-form-input
+                    id="FirstName"
+                    v-model.trim="$v.form.firstName.$model"
+                    placeholder="Имя"
+                    :state="validateState('firstName')"
+                    aria-describedby="input-1-live-feedback"
+                    required
+                  ></b-form-input>
+                  <b-form-invalid-feedback id="input-1-live-feedback"
+                    >Вводите только буквы.</b-form-invalid-feedback
+                  >
+                </b-form-group>
+              </b-col>
+              <!-- Отчество -->
+              <b-col lg>
+                <b-form-group
+                  id="input-group-2"
+                  label="Отчество"
+                  label-for="MiddleName"
+                >
+                  <b-form-input
+                    id="MiddleName"
+                    v-model.trim="$v.form.middleName.$model"
+                    placeholder="Отчество (не обязательно)"
+                    :state="validateState('middleName')"
+                    aria-describedby="input-1-live-feedback"
+                  ></b-form-input>
+                  <b-form-invalid-feedback id="input-1-live-feedback"
+                    >Вводите только буквы.</b-form-invalid-feedback
+                  >
+                </b-form-group>
+              </b-col>
+            </b-row>
+            <!-- дата рождения -->
+            <b-row>
+              <b-col lg>
+                <b-form-group
+                  id="input-group-2"
+                  label="Выберете дату рождения"
+                  label-for="inputDate"
+                >
+                  <b-form-input
+                    type="date"
+                    id="inputDate"
+                    v-model="$v.form.inputDate.$model"
+                    :state="validateState('inputDate')"
+                    required
+                  ></b-form-input>
+                </b-form-group>
+              </b-col>
+              <!-- вид документа -->
+              <b-col lg>
+                <b-form-group
+                  id="input-group-3"
+                  label="Вид документа"
+                  label-for="input-3"
+                >
+                  <b-form-select
+                    id="input-3"
+                    v-model="$v.form.selected.$model"
+                    :options="docTypes"
+                    :state="validateState('selected')"
+                    required
+                  ></b-form-select>
+                </b-form-group>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col>
+                <!-- серия паспорта -->
+                <b-form-group
+                  id="input-group-2"
+                  label="Серия паспорта"
+                  label-for="docSer"
+                >
+                  <b-form-input
+                    type="number"
+                    id="docSer"
+                    placeholder="Серия паспорта"
+                    v-model="$v.form.docSer.$model"
+                    :state="validateState('docSer')"
+                    required
+                  ></b-form-input>
+                  <b-form-invalid-feedback id="input-2-live-feedback"
+                    >Должно быть 4 цифры</b-form-invalid-feedback
+                  >
+                </b-form-group>
+              </b-col>
+              <!-- номер паспорта -->
+              <b-col>
+                <b-form-group
+                  id="input-group-2"
+                  label="Номер паспорта"
+                  label-for="docNum"
+                >
+                  <b-form-input
+                    type="number"
+                    id="docNum"
+                    placeholder="Номер паспорта"
+                    v-model="$v.form.docNum.$model"
+                    :state="validateState('docNum')"
+                    required
+                  ></b-form-input>
+                  <b-form-invalid-feedback id="input-2-live-feedback"
+                    >Должно быть 6 цифр</b-form-invalid-feedback
+                  >
+                </b-form-group>
+              </b-col>
+            </b-row>
+            <!-- кем выдан -->
             <b-form-group
               id="input-group-2"
-              label="Фамилия"
-              label-for="LastName"
+              label="Кем выдан"
+              label-for="docIssuedBy"
             >
-              <b-form-input
-                id="LastName"
-                v-model.trim="$v.form.lastName.$model"
-                placeholder="Фамилия"
-                :state="validateState('lastName')"
-                aria-describedby="input-1-live-feedback"
-                required
-              ></b-form-input>
-              <b-form-invalid-feedback id="input-1-live-feedback"
-                >Вводите только  буквы.</b-form-invalid-feedback
-              >
+              <b-form-textarea
+                id="docIssuedBy"
+                v-model="$v.form.docIssuedBy.$model"
+                :state="validateState('docIssuedBy')"
+                placeholder="Кем выдан"
+                rows="2"
+                max-rows="2"
+              ></b-form-textarea>
             </b-form-group>
-          </b-col>
-          <!-- Имя -->
-          <b-col lg>
-            <b-form-group id="input-group-2" label="Имя" label-for="FirstName">
-              <b-form-input
-                id="FirstName"
-                v-model.trim="$v.form.firstName.$model"
-                placeholder="Имя"
-                :state="validateState('firstName')"
-                aria-describedby="input-1-live-feedback"
-                required
-              ></b-form-input>
-              <b-form-invalid-feedback id="input-1-live-feedback"
-                >Вводите только  буквы.</b-form-invalid-feedback
-              >
-            </b-form-group>
-          </b-col>
-          <!-- Отчество -->
-          <b-col lg>
+            <!-- Дата выдачи  -->
+            <b-row>
+              <b-col>
+                <b-form-group
+                  id="input-group-2"
+                  label="Дата выдачи"
+                  label-for="docDate"
+                >
+                  <b-form-input
+                    type="date"
+                    id="docDate"
+                    v-model="$v.form.docDate.$model"
+                    :state="validateState('docDate')"
+                    required
+                  ></b-form-input>
+                </b-form-group>
+              </b-col>
+              <!-- Годен до -->
+              <b-col>
+                <b-form-group
+                  id="input-group-2"
+                  label="Годен до"
+                  label-for="docDateValid"
+                >
+                  <b-form-input
+                    type="date"
+                    id="docDateValid"
+                    v-model="$v.form.docDateValid.$model"
+                    :disabled="disableInput"
+                    required
+                  ></b-form-input>
+                </b-form-group>
+              </b-col>
+            </b-row>
+            <!-- Гражданство -->
             <b-form-group
               id="input-group-2"
-              label="Отчество"
-              label-for="MiddleName"
+              label="Гражданство"
+              label-for="сitizenshipCode"
             >
               <b-form-input
-                id="MiddleName"
-                v-model.trim="$v.form.middleName.$model"
-                placeholder="Отчество (не обязательно)"
-                :state="validateState('middleName')"
-                aria-describedby="input-1-live-feedback"
-                
-              ></b-form-input>
-              <b-form-invalid-feedback id="input-1-live-feedback"
-                >Вводите только буквы.</b-form-invalid-feedback
-              >
-            </b-form-group>
-          </b-col>
-        </b-row>
-        <!-- дата рождения -->
-        <b-row>
-          <b-col lg>
-            <b-form-group
-              id="input-group-2"
-              label="Выберете дату рождения"
-              label-for="inputDate"
-            >
-              <b-form-input
-                type="date"
-                id="inputDate"
-                v-model="$v.form.inputDate.$model"
-                :state="validateState('inputDate')"
+                id="сitizenshipCode"
+                v-model="$v.form.сitizenshipCode.$model"
+                :state="validateState('сitizenshipCode')"
+                :value="defaultCitizenshipCode"
+                placeholder="Гражданство"
                 required
               ></b-form-input>
             </b-form-group>
-          </b-col>
-          <!-- вид документа -->
-          <b-col lg>
+            <!-- Адрес регистрации -->
+            <b-form-group
+              id="input-group-2"
+              label="Адрес регистрации"
+              label-for="officialAddress"
+            >
+              <b-form-input
+                id="officialAddress"
+                v-model="$v.form.officialAddress.$model"
+                :state="validateState('officialAddress')"
+                placeholder="Адрес регистрации"
+                required
+              ></b-form-input>
+            </b-form-group>
+            <!-- Должность -->
+            <b-form-group
+              id="input-group-2"
+              label="Должность"
+              label-for="position"
+            >
+              <b-form-input
+                id="position"
+                v-model="$v.form.position.$model"
+                :state="validateState('position')"
+                placeholder="Должность"
+                required
+              ></b-form-input>
+              <b-form-invalid-feedback id="input-position-live-feedback"
+                >Поле должно содержать только буквы</b-form-invalid-feedback
+              >
+            </b-form-group>
+            <!-- Электронный адрес получателя пропуска  -->
+            <!-- <b-form-group
+              id="input-group-1"
+              label="Электронный адрес получателя пропуска:"
+              label-for="guestEmailAddress"
+            >
+              <b-form-input
+                id="guestEmailAddress"
+                v-model="$v.form.guestEmailAddress.$model"
+                :state="validateState('guestEmailAddress')"
+                type="email"
+                placeholder="Введите email"
+                required
+              ></b-form-input>
+            </b-form-group> -->
+          </b-form>
+        </b-card>
+      </b-collapse>
+      <b-collapse id="collapse-car">
+        <b-card
+          class="mb-4"
+          header="Форма заполнения транспортного средства"
+          header-tag="h5"
+        >
+          <b-form>
+            <b-form-group
+              id="input-group-2"
+              label="Страна регистрации"
+              label-for="carCitizenshipCode"
+            >
+              <b-form-input
+                id="carCitizenshipCode"
+                v-model="form.carCitizenshipCode"
+                placeholder="Страна регистрации"
+              ></b-form-input>
+            </b-form-group>
+            <!-- Регистрационный знак  -->
+            <b-form-group
+              id="input-group-2"
+              label="Регистрационный знак"
+              label-for="carRegistrationNumber"
+            >
+              <b-form-input
+                id="carRegistrationNumber"
+                v-model="form.carRegistrationNumber"
+                placeholder="Регистрационный знак"
+              ></b-form-input>
+            </b-form-group>
+            <!-- Марка -->
+            <b-form-group id="input-group-2" label="Марка" label-for="carBrand">
+              <b-form-input
+                id="carBrand"
+                v-model="form.carBrand"
+                placeholder="Марка"
+              ></b-form-input>
+            </b-form-group>
+            <!-- Модель -->
+            <b-form-group
+              id="input-group-2"
+              label="Модель"
+              label-for="carModel"
+            >
+              <b-form-input
+                id="carModel"
+                v-model="form.carModel"
+                placeholder="Модель"
+              ></b-form-input>
+            </b-form-group>
+            <!-- Цвет -->
+            <b-form-group id="input-group-2" label="Цвет" label-for="carColor">
+              <b-form-input
+                id="carColor"
+                v-model="$v.form.carColor.$model"
+                :state="validateState('carColor')"
+                placeholder="Цвет"
+              ></b-form-input>
+              <b-form-invalid-feedback id="input-car-color-live-feedback"
+                >Поле должно содержать только буквы.</b-form-invalid-feedback
+              >
+            </b-form-group>
+            <!-- Наличие прицепа -->
             <b-form-group
               id="input-group-3"
-              label="Вид документа"
-              label-for="input-3"
+              label="Наличие прицепа"
+              label-for="trailer"
             >
               <b-form-select
-                id="input-3"
-                v-model="$v.form.selected.$model"
-                :options="docTypes"
-                :state="validateState('selected')"
-                required
+                id="trailer"
+                v-model="form.trailer"
+                :options="trailers"
               ></b-form-select>
             </b-form-group>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col>
-            <!-- серия паспорта -->
+            <!-- Страна регистрации прицепа  -->
             <b-form-group
               id="input-group-2"
-              label="Серия паспорта"
-              label-for="docSer"
+              label="Страна регистрации прицепа"
+              label-for="trailerCitizenshipCode"
             >
               <b-form-input
-                type="number"
-                id="docSer"
-                placeholder="Серия паспорта"
-                v-model="$v.form.docSer.$model"
-                :state="validateState('docSer')"
-                required
-              ></b-form-input>
-              <b-form-invalid-feedback id="input-2-live-feedback"
-                >Должно быть 4 цифры</b-form-invalid-feedback
-              >
-            </b-form-group>
-          </b-col>
-          <!-- номер паспорта -->
-          <b-col>
-            <b-form-group
-              id="input-group-2"
-              label="Номер паспорта"
-              label-for="docNum"
-            >
-              <b-form-input
-                type="number"
-                id="docNum"
-                placeholder="Номер паспорта"
-                v-model="$v.form.docNum.$model"
-                :state="validateState('docNum')"
-                required
-              ></b-form-input>
-              <b-form-invalid-feedback id="input-2-live-feedback"
-                >Должно быть 6 цифр</b-form-invalid-feedback
-              >
-            </b-form-group>
-          </b-col>
-        </b-row>
-        <!-- кем выдан -->
-        <b-form-group
-          id="input-group-2"
-          label="Кем выдан"
-          label-for="docIssuedBy"
-        >
-          <b-form-textarea
-            id="docIssuedBy"
-            v-model="$v.form.docIssuedBy.$model"
-            :state="validateState('docIssuedBy')"
-            placeholder="Кем выдан"
-            rows="2"
-            max-rows="2"
-          ></b-form-textarea>
-        </b-form-group>
-        <!-- Дата выдачи  -->
-        <b-row>
-          <b-col>
-            <b-form-group
-              id="input-group-2"
-              label="Дата выдачи"
-              label-for="docDate"
-            >
-              <b-form-input
-                type="date"
-                id="docDate"
-                v-model="$v.form.docDate.$model"
-                :state="validateState('docDate')"
-                required
+                id="trailerCitizenshipCode"
+                v-model="form.trailerCitizenshipCode"
+                placeholder="Страна регистрации прицепа"
               ></b-form-input>
             </b-form-group>
-          </b-col>
-          <!-- Годен до -->
-          <b-col>
-            <b-form-group
-              id="input-group-2"
-              label="Годен до"
-              label-for="docDateValid"
-            >
-              <b-form-input
-                type="date"
-                id="docDateValid"
-                v-model="$v.form.docDateValid.$model"
-                :disabled="disableInput"
-                required
-              ></b-form-input>
-            </b-form-group>
-          </b-col>
-        </b-row>
-        <!-- Гражданство -->
-        <b-form-group
-          id="input-group-2"
-          label="Гражданство"
-          label-for="сitizenshipCode"
-        >
-          <b-form-input
-            id="сitizenshipCode"
-            v-model="$v.form.сitizenshipCode.$model"
-            :state="validateState('сitizenshipCode')"
-            :value="defaultCitizenshipCode"
-            placeholder="Гражданство"
-            required
-          ></b-form-input>
-        </b-form-group>
-        <!-- Адрес регистрации -->
-        <b-form-group
-          id="input-group-2"
-          label="Адрес регистрации"
-          label-for="officialAddress"
-        >
-          <b-form-input
-            id="officialAddress"
-            v-model="$v.form.officialAddress.$model"
-            :state="validateState('officialAddress')"
-            placeholder="Адрес регистрации"
-            required
-          ></b-form-input>
-        </b-form-group>
-        <!-- Должность -->
-        <b-form-group id="input-group-2" label="Должность" label-for="position">
-          <b-form-input
-            id="position"
-            v-model="$v.form.position.$model"
-            :state="validateState('position')"
-            placeholder="Должность"
-            required
-          ></b-form-input>
-          <b-form-invalid-feedback id="input-position-live-feedback"
-            >Поле должно содержать только буквы</b-form-invalid-feedback
-          >
-        </b-form-group>
-        <!-- Электронный адрес получателя пропуска  -->
-        <b-form-group
-          id="input-group-1"
-          label="Электронный адрес получателя пропуска:"
-          label-for="guestEmailAddress"
-        >
-          <b-form-input
-            id="guestEmailAddress"
-            v-model="$v.form.guestEmailAddress.$model"
-            :state="validateState('guestEmailAddress')"
-            type="email"
-            placeholder="Введите email"
-            required
-          ></b-form-input>
-        </b-form-group>
-        <b-row>
-            <!-- Кнопка Добавить данные еще одно физ. лица -->
-          <!-- <b-col>
-            <div>
-              <b-button variant="primary"
-                >Добавить данные еще одно физ. лица</b-button
-              >
-            </div>
-          </b-col> -->
-          <b-col>
-            <div>
-              <b-button v-b-toggle.collapse-1 variant="primary"
-                >Добавить машину</b-button
-              >
-              <b-collapse id="collapse-1" class="mt-2">
 
-                  <p class="card-text">Свернутое содержимое здесь</p>
-                  <b-form-group
-                    id="input-group-2"
-                    label="Страна регистрации"
-                    label-for="carCitizenshipCode"
-                  >
-                    <b-form-input
-                      id="carCitizenshipCode"
-                      v-model="form.carCitizenshipCode"
-                      placeholder="Страна регистрации"
-                    ></b-form-input>
-                  </b-form-group>
-                  <!-- Регистрационный знак  -->
-                  <b-form-group
-                    id="input-group-2"
-                    label="Регистрационный знак"
-                    label-for="carRegistrationNumber"
-                  >
-                    <b-form-input
-                      id="carRegistrationNumber"
-                      v-model="form.carRegistrationNumber"
-                      placeholder="Регистрационный знак"
-                    ></b-form-input>
-                  </b-form-group>
-                  <!-- Марка -->
-                  <b-form-group
-                    id="input-group-2"
-                    label="Марка"
-                    label-for="carBrand"
-                  >
-                    <b-form-input
-                      id="carBrand"
-                      v-model="form.carBrand"
-                      placeholder="Марка"
-                    ></b-form-input>
-                  </b-form-group>
-                  <!-- Модель -->
-                  <b-form-group
-                    id="input-group-2"
-                    label="Модель"
-                    label-for="carModel"
-                  >
-                    <b-form-input
-                      id="carModel"
-                      v-model="form.carModel"
-                      placeholder="Модель"
-                    ></b-form-input>
-                  </b-form-group>
-                  <!-- Цвет -->
-                  <b-form-group
-                    id="input-group-2"
-                    label="Цвет"
-                    label-for="carColor"
-                  >
-                    <b-form-input
-                      id="carColor"
-                      v-model="$v.form.carColor.$model"
-                      :state="validateState('carColor')"
-                      placeholder="Цвет"
-                    ></b-form-input>
-                    <b-form-invalid-feedback id="input-car-color-live-feedback"
-                      >Поле должно содержать только
-                      буквы.</b-form-invalid-feedback
-                    >
-                  </b-form-group>
-                  <!-- Наличие прицепа -->
-                  <b-form-group
-                    id="input-group-3"
-                    label="Наличие прицепа"
-                    label-for="trailer"
-                  >
-                    <b-form-select
-                      id="trailer"
-                      v-model="form.trailer"
-                      :options="trailers"
-                    ></b-form-select>
-                  </b-form-group>
-                  <!-- Страна регистрации прицепа  -->
-                  <b-form-group
-                    id="input-group-2"
-                    label="Страна регистрации прицепа"
-                    label-for="trailerCitizenshipCode"
-                  >
-                    <b-form-input
-                      id="trailerCitizenshipCode"
-                      v-model="form.trailerCitizenshipCode"
-                      placeholder="Страна регистрации прицепа"
-                    ></b-form-input>
-                  </b-form-group>
-                  <!-- Регистрационный знак прицепа   -->
-                  <b-form-group
-                    id="input-group-2"
-                    label="Регистрационный знак прицепа"
-                    label-for="trailerRegistrationNumber"
-                  >
-                    <b-form-input
-                      id="trailerRegistrationNumber"
-                      v-model="form.trailerRegistrationNumber"
-                      placeholder="Регистрационный знак прицепа"
-                    ></b-form-input>
-                  </b-form-group>
+            <!-- Регистрационный знак прицепа   -->
+            <b-form-group
+              id="input-group-2"
+              label="Регистрационный знак прицепа"
+              label-for="trailerRegistrationNumber"
+            >
+              <b-form-input
+                id="trailerRegistrationNumber"
+                v-model="form.trailerRegistrationNumber"
+                placeholder="Регистрационный знак прицепа"
+              ></b-form-input>
+            </b-form-group>
+          </b-form>
+        </b-card>
+      </b-collapse>
 
-              </b-collapse>
-            </div>
-          </b-col>
-        </b-row>
-        <!-- Данные транспортного средства, на которое оформляется пропуск -->
-
-        <!-- <b-button type="submit" variant="primary">Отправить</b-button> -->
-        <!-- <b-button type="reset" variant="danger">Сбросить</b-button> -->
-      </b-form>
       <!-- <b-card class="mt-3" header="Form Data Result">
         <pre class="m-0">{{ form }}</pre>
       </b-card> -->
@@ -602,12 +572,6 @@ export default {
     // },
   },
   methods: {
-    showFormPerson() {
-      console.log("тыц");
-      console.log(this.show);
-      return (this.show = !this.show);
-    },
-
     validateState(name) {
       const { $dirty, $error } = this.$v.form[name];
       return $dirty ? !$error : null;
@@ -644,13 +608,6 @@ export default {
     //   this.form.inputDate = null;
     //   this.form.selected = "Паспорт гражданина РФ";
     //   this.form.docType = null;
-
-    //   // Уловка для сброса/очистки состояния проверки формы в собственном браузере
-    //   // this.show = false;
-    //   // this.$nextTick(() => {
-    //   //   this.show = true;
-    //   // });
-    // },
   },
 };
 </script>
