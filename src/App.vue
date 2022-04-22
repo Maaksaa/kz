@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-
-    <app-navbar></app-navbar>  
+    <app-navbar></app-navbar>
 
     <b-container class="mt-5">
       <b-collapse id="collapse-person">
@@ -376,13 +375,10 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 
 import { BIcon } from "bootstrap-vue";
 
-
-
 export default {
   name: "App",
   components: {
     BIcon,
-
   },
   mixins: [validationMixin],
   data() {
