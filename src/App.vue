@@ -1,18 +1,9 @@
 <template>
   <div id="app">
-    <b-navbar
-      sticky
-      fixed
-      toggleable="lg"
-      type="dark"
-      variant="danger"
-      class="mb-3"
-    >
-      <!-- <b-navbar-brand href="#">NavBar</b-navbar-brand> -->
-      <b-button v-b-toggle.collapse-person class="m-1">+ Человек</b-button>
-      <b-button v-b-toggle.collapse-car class="m-1">+ Машина</b-button>
-    </b-navbar>
-    <b-container>
+
+    <app-navbar></app-navbar>  
+
+    <b-container class="mt-5">
       <b-collapse id="collapse-person">
         <b-card class="mb-4" header="Форма для заполнения" header-tag="h5">
           <b-form @submit="onSubmit">
@@ -385,14 +376,19 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 
 import { BIcon } from "bootstrap-vue";
 
+
+
 export default {
   name: "App",
   components: {
     BIcon,
+
   },
   mixins: [validationMixin],
   data() {
     return {
+      rawHtml: null,
+      textTest: "test",
       form: {
         lastName: "",
         firstName: "",
@@ -576,6 +572,7 @@ export default {
       const { $dirty, $error } = this.$v.form[name];
       return $dirty ? !$error : null;
     },
+
     onSubmit(event) {
       event.preventDefault();
       console.log(this.form);
@@ -612,5 +609,8 @@ export default {
 };
 </script>
 
-<style>
+<style >
+.mt-5 {
+  margin-top: 6rem !important;
+}
 </style>
