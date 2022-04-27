@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <app-navbar></app-navbar>
+    <app-navbar :text-test="textTest"></app-navbar>
 
     <b-container class="mt-5">
       <b-collapse id="collapse-person">
@@ -238,6 +238,8 @@
                 >Поле должно содержать только буквы</b-form-invalid-feedback
               >
             </b-form-group>
+            <b-button @click="onSubmit" variant="success">Записать</b-button>
+
             <!-- Электронный адрес получателя пропуска  -->
             <!-- <b-form-group
               id="input-group-1"
@@ -355,10 +357,62 @@
                 placeholder="Регистрационный знак прицепа"
               ></b-form-input>
             </b-form-group>
+            <b-button @click="onSubmit" variant="success">Записать</b-button>
           </b-form>
         </b-card>
       </b-collapse>
-
+      <b-collapse id="collapse-view-form">
+        <b-card class="mb-4" header="Показ содержимого" header-tag="h5">
+          <b-form>
+            <b-row>
+              <!-- Фамилия -->
+              <b-col lg>
+                <b-form-group
+                  id="input-test1"
+                  label="Фамилия"
+                  label-for="LastName1"
+                >
+                  <b-form-input
+                    id="LastName1"
+                    v-model.trim="newObj.lastName"
+                    placeholder="Фамилия"
+                    required
+                  ></b-form-input>
+                </b-form-group>
+              </b-col>
+              <b-col lg>
+                <b-form-group
+                  id="input-test2"
+                  label="Имя"
+                  label-for="firstName1"
+                >
+                  <b-form-input
+                    id="firstName1"
+                    v-model.trim="newObj.firstName"
+                    placeholder="Имя"
+                    required
+                  ></b-form-input>
+                </b-form-group>
+              </b-col>
+              <b-col lg>
+                <b-form-group
+                  id="input-test3"
+                  label="Отчество"
+                  label-for="middleName1"
+                >
+                  <b-form-input
+                    id="middleName1"
+                    v-model.trim="newObj.middleName"
+                    placeholder="Отчество"
+                    required
+                  ></b-form-input>
+                </b-form-group>
+              </b-col>
+            </b-row>
+            <b-button @click="onViewPerson" variant="success">Загрузить данные</b-button>
+          </b-form>
+        </b-card>
+      </b-collapse>
       <!-- <b-card class="mt-3" header="Form Data Result">
         <pre class="m-0">{{ form }}</pre>
       </b-card> -->
@@ -375,22 +429,27 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 
 import { BIcon } from "bootstrap-vue";
 
+import NavBar from "./components/Navbar.vue";
+
 export default {
   name: "App",
   components: {
     BIcon,
+    NavBar,
   },
   mixins: [validationMixin],
   data() {
     return {
       rawHtml: null,
-      textTest: "test",
+      newObj: {},
+      textTest: "из родителя",
       form: {
+        idPeson: 0,
         lastName: "",
         firstName: "",
         middleName: "",
-        docIssuedBy: "",
         docDate: "",
+        docIssuedBy: "",
         сitizenshipCode: "",
         officialAddress: "",
         position: "",
@@ -568,11 +627,24 @@ export default {
       const { $dirty, $error } = this.$v.form[name];
       return $dirty ? !$error : null;
     },
+    // просто проверяю по ключу и если есть, загружаю в объект
+    onViewPerson() {
+      if (localStorage["mykey0"]) {
+        // получим из LocalStorage значение ключа «mykey» и преобразуем его с помощью метода JSON.parse() в объект
+        this.newObj = JSON.parse(localStorage["mykey0"]);
+      }
+    },
 
     onSubmit(event) {
+      // отмена перезагрузки страницы
       event.preventDefault();
-      console.log(this.form);
-      alert(JSON.stringify(this.form));
+
+      let temp = this.form;
+      console.log(temp);
+      localStorage["mykey" + this.form.idPeson] = JSON.stringify(temp);
+      this.form.idPeson++;
+
+      // alert(JSON.stringify(this.form));
     },
     // onReset(event) {
     //   event.preventDefault();

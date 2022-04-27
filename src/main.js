@@ -13,8 +13,15 @@ Vue.use(BootstrapVue);
 
 Vue.use(Vuelidate);
 
+
 new Vue({
-  render: function (h) {
-    return h(App);
-  },
+  // tom,
+  render: (h) => h(App),
 }).$mount("#app");
+
+// var app = new Vue({
+//   el: '#app',
+//   data: {
+//     // user,
+//   }
+// })
